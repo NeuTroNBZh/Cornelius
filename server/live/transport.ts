@@ -10,6 +10,11 @@ import type { DisplayCard, ImageCard, LunaCardRequest, Scope } from '../../share
 import type { ToolResult } from '../../shared/addons.js';
 import type { AddonReadOutcome } from '../addons/runtime.js';
 import type { SessionController, SessionTransport } from '../controller.js';
+import {
+  END_CONVERSATION_TOOL,
+  endConversationResult,
+  endConversationTool,
+} from './conversation-end.js';
 import { illustrationPrompt } from '../image-illustration.js';
 import { validators } from '../../shared/validation.js';
 import type { PersonalityPreferences } from '../../shared/personality.js';
@@ -543,6 +548,7 @@ export class LiveTransport implements SessionTransport {
       // Mode voix compris : la caméra s’allume pendant la conversation pour regarder.
       ...(this.vision?.tools() ?? []),
       ...(this.memory?.tools() ?? []),
+      ...(this.controller.isEndWordEnabled() ? [endConversationTool] : []),
     ];
   }
   /** Contexte silencieux : la description locale informe la réponse sans être lue à voix haute. */
@@ -1271,6 +1277,17 @@ export class LiveTransport implements SessionTransport {
       if (this.integrations.imageGeneration?.handles(name)) {
         this.beginTool(active, delegation);
         void this.runImageGeneration(active, delegation, item.call_id, name, args);
+        return;
+      }
+      if (name === END_CONVERSATION_TOOL && this.controller.isEndWordEnabled()) {
+        this.beginTool(active, delegation);
+        const accepted = this.controller.requestEnd(active.scope);
+        if (accepted)
+          this.logs?.write('info', 'session', 'Fin de conversation demandée', {
+            interactionId: active.scope.interactionId,
+          });
+        this.sendItem(active, item.call_id, endConversationResult(accepted));
+        this.finishTool(active, delegation);
         return;
       }
       if (name === 'memory__recall' && this.memory) {

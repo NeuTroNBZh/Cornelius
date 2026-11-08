@@ -80,6 +80,7 @@ import { registerMail } from './mail-api.js';
 import { MailRepository } from './mail-store.js';
 import { Alarms } from './alarms.js';
 import { AlarmTools } from './alarms-tools.js';
+import { endConversationTool } from './live/conversation-end.js';
 import { registerAlarms } from './alarms-api.js';
 import { AlarmsRepository } from './alarms-store.js';
 import { MAIL_PASSWORD_SECRET } from '../shared/mail.js';
@@ -1308,6 +1309,7 @@ export async function createApp(
       ...alarmTools.tools(profileId),
       ...vision.tools(),
       ...memory.tools(),
+      ...(controller.isEndWordEnabled() ? [endConversationTool] : []),
     ];
     const delegationMode = controller.snapshot().state.delegationMode;
     const features = {
@@ -1538,6 +1540,12 @@ export async function createApp(
     if (!enabledSchema(request.body))
       return reply.code(400).send({ error: 'Fermeture après la réponse invalide.' });
     controller.setReplyClose(request.body.enabled);
+    return controller.snapshot();
+  });
+  app.patch('/api/admin/end-word', { preHandler: requireAdmin }, async (request, reply) => {
+    if (!enabledSchema(request.body))
+      return reply.code(400).send({ error: 'Fermeture sur un mot de fin invalide.' });
+    controller.setEndWord(request.body.enabled);
     return controller.snapshot();
   });
   const greetingSchema = compile<{ mode: GreetingMode }>({
