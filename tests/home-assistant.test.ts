@@ -319,8 +319,6 @@ test('modes, ventilateurs, scripts et scènes : commandés et confirmés à leur
   assert.equal(f.home.tools().length, 1);
 });
 
-});
-
 test('thermostat : consigne ramenée au pas et à la plage, envoyée puis confirmée', async (t) => {
   const f = await fixture(t);
   const thermostat = (state: string) => ({

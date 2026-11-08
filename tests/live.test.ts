@@ -930,6 +930,8 @@ test('conversation__end désactivé : l’appel est refusé et la conversation c
   await setImmediate();
   f.advance(15_000);
   assert.equal(f.controller.snapshot().state.session.phase, 'ready');
+});
+
 test('satellite__volume : proposé au satellite seulement, consigne ajoutée', (t) => {
   const tool = {
     name: 'satellite__volume',
