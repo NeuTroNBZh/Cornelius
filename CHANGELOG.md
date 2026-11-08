@@ -11,6 +11,11 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 **Ajouté**
 
 - **Fin de parole → Fermer quand on dit merci** (désactivée par défaut) : quand la personne clôt l’échange sans nouvelle demande (« merci », « c’est tout », « au revoir », « bonne nuit »), Cornelius répond d’une formule courte puis la conversation se ferme 2 s après la fin de sa réponse, au plus tard 10 s après. La parole entendue dans la pièce ne la retient pas : utile sur un satellite quand on parle ensuite à quelqu’un d’autre. La fin est reconnue par le serveur dans la transcription (une phrase faite seulement d’une formule de fin), ou par le modèle avec l’outil vocal `conversation__end`. Route `PATCH /api/admin/end-word` et champ `endWord` de l’état. **Autres formules de fin** : celles du foyer, une par ligne (20 au plus, 60 caractères), reconnues quand elles forment toute la phrase et données au modèle ; route `PATCH /api/admin/end-word/phrases`, champ `endPhrases`, table `end_word_phrases`. Le réglage vaut à partir de la conversation suivante.
+### 2026-11-08 : couleur et blanc des lumières
+
+**Ajouté**
+
+- **Home Assistant → couleur des lumières** : « mets le salon en bleu », « blanc chaud au bureau ». L’outil `home_assistant__control` reçoit `rgbColor` (`[r, g, b]`, 0 à 255) et `colorTempKelvin` (1500 à 9000 K, ramené à la plage de l’ampoule), seulement pour `turn_on` et une lumière qui les accepte (`color`, `colorTemp` dans le catalogue, lus dans `supported_color_modes`). La commande n’est confirmée que si l’état relu les montre, à 40 par canal et 150 K près. Plus besoin d’une action HTTP par couleur.
 
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 
