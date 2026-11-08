@@ -11,6 +11,8 @@ Home Assistant est un logiciel de domotique installé à part. Cornelius s’y c
 - **Scripts et scènes** (`script.*`, `scene.*`) : lancer ou arrêter un script, activer une scène (une scène ne s’éteint pas). Leur lancement est confirmé par la mise à jour de leur état dans Home Assistant : un script court repasse aussitôt à « off », l’état d’une scène est l’heure de sa dernière activation.
 - **Capteurs**, en lecture seule : capteurs et détecteurs, minuteries, dates et heures, nombres, listes de choix, compteurs, thermostats, volets et serrures. Un capteur n’est jamais commandé : Cornelius peut dire si une serrure est fermée, pas l’ouvrir.
 
+Un appareil ajouté ensuite dans Home Assistant apparaît tout seul dans la liste, marqué **Nouveau**, avec un compteur au-dessus de la liste, jusqu’au prochain enregistrement de la sélection. Il n’est jamais utilisable avant d’être coché. Le journal note aussi « Nouvel appareil Home Assistant à cocher ».
+
 Dans Home Assistant, un « switch » peut piloter autre chose qu’une prise, et un script peut faire n’importe quoi. Ne cochez que les appareils et scripts que Cornelius doit vraiment commander.
 
 La configuration est commune au foyer. La carte **Home Assistant** se trouve dans la rubrique **Modules**, groupe « Maison ». Elle s’affiche quand **Sources de** vaut « Tout le monde » ou « Le foyer ».

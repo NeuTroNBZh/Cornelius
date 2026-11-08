@@ -30,6 +30,11 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 **Ajouté**
 
 - **Home Assistant → Régler les thermostats** (désactivé par défaut) : nouvel outil `home_assistant__climate`, pour la consigne seulement (« mets le bureau à 20 degrés »). La valeur est ramenée à la plage et au pas du thermostat, envoyée par `climate/set_temperature` puis confirmée par relecture ; un thermostat arrêté est refusé, le mode n’est jamais changé. Réglage `climateControl` de `PATCH /api/admin/home-assistant/access`, table `home_assistant_climate`. Les thermostats restent lisibles par `home_assistant__read`.
+### 2026-11-08 : nouveaux appareils Home Assistant signalés
+
+**Ajouté**
+
+- **Home Assistant** : un appareil apparu dans Home Assistant depuis le dernier enregistrement de la sélection est marqué « Nouveau » dans la liste, avec un compteur ; champ `newEntities` de la vue, ligne « Nouvel appareil Home Assistant à cocher » au journal. Rien ne devient utilisable sans être coché.
 
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 

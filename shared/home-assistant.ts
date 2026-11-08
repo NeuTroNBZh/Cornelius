@@ -86,6 +86,11 @@ export interface HomeAssistantView {
   knownPeopleOnly: boolean;
   /** Luna peut régler la consigne des thermostats cochés (désactivé par défaut). */
   climateControl: boolean;
+  /**
+   * Entités apparues dans Home Assistant depuis le dernier enregistrement de la sélection : à
+   * cocher si Cornelius doit s’en servir. Rien ne devient utilisable sans être coché.
+   */
+  newEntities: string[];
 }
 
 export interface HomeAssistantCommand {
