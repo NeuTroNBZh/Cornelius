@@ -50,6 +50,11 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 **Ajouté**
 
 - Outil vocal `satellite__volume`, proposé seulement dans une conversation de satellite : « parle plus fort », « moins fort » (deux crans) ou « mets le volume à 5 » (0 à 10). Le volume est enregistré comme depuis l’administration et envoyé aussitôt au satellite (`settings`).
+### 2026-11-08 : temps de conversation
+
+**Ajouté**
+
+- **Mise en route → Temps de conversation** : minutes et nombre de conversations d’aujourd’hui, du mois et du mois précédent, dans le fuseau du foyer (70 jours gardés). Le coût n’est estimé qu’avec un prix par minute saisi (aucun par défaut, en $ ou en €). Table `voice_usage`, routes `GET /api/admin/voice-usage` et `PATCH /api/admin/voice-usage/price`.
 
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 
