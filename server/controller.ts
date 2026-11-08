@@ -261,6 +261,8 @@ export class SessionController {
   private greeting: GreetingMode = DEFAULT_GREETING_MODE;
   private knownPeopleOnly = false;
   private silenceClose: SilenceClose = { ...DEFAULT_SILENCE_CLOSE };
+  // Fin de parole du satellite de la conversation en cours (null : celle du foyer).
+  private satelliteSilenceMs: number | null = null;
   private voiceRecognition = false;
   private replyClose = false;
   // Fermeture après la première réponse : la personne a parlé, puis Cornelius lui a répondu.
@@ -1272,7 +1274,13 @@ export class SessionController {
    * conversation est déjà en cours, ou si l’ouverture est réservée aux membres du foyer et que
    * le satellite n’est rattaché à personne (il ne voit personne).
    */
-  satelliteWake(satellite: { id: string; name: string; profileId?: string | null }): boolean {
+  satelliteWake(satellite: {
+    id: string;
+    name: string;
+    profileId?: string | null;
+    /** Fin de parole propre au satellite ; null ou absent : celle du foyer. */
+    silenceCloseMs?: number | null;
+  }): boolean {
     if (!this.isWakeListening()) return false;
     const profile = satellite.profileId ? this.profiles.get(satellite.profileId) : null;
     if ((this.session.mode === 2 || this.knownPeopleOnly) && !profile) {
@@ -1291,6 +1299,7 @@ export class SessionController {
     if (this.diagnostic === satelliteMembersDiagnostic) this.diagnostic = null;
     this.startupWakeAt = this.now();
     this.changeProfile(profile, profile ? 'explicit' : 'household', false);
+    this.satelliteSilenceMs = satellite.silenceCloseMs ?? null;
     this.admit('satellite', 'satellite:' + satellite.id, {
       id: satellite.id,
       name: satellite.name,
@@ -1757,6 +1766,7 @@ export class SessionController {
   }
 
   private silenceDelay(): number {
+    if (this.satelliteSession() && this.satelliteSilenceMs !== null) return this.satelliteSilenceMs;
     return this.silenceClose.delayMs;
   }
 

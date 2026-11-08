@@ -461,6 +461,11 @@ export const migrations: readonly string[] = [
     enabled INTEGER NOT NULL DEFAULT 0 CHECK (enabled IN (0, 1))
   ) STRICT;
   INSERT OR IGNORE INTO home_assistant_climate (id) VALUES (1);`,
+  // Fin de parole propre à un satellite : sans ligne, celle du foyer.
+  `CREATE TABLE IF NOT EXISTS satellite_silence (
+    satellite_id TEXT PRIMARY KEY REFERENCES satellites(id) ON DELETE CASCADE,
+    delay_ms INTEGER NOT NULL CHECK (delay_ms BETWEEN 3000 AND 300000)
+  ) STRICT;`,
 ];
 
 /** The server owns this connection. Backups include WAL changes via SQLite itself. */
