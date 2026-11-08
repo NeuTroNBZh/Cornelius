@@ -35,6 +35,11 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 **Ajouté**
 
 - **Home Assistant** : un appareil apparu dans Home Assistant depuis le dernier enregistrement de la sélection est marqué « Nouveau » dans la liste, avec un compteur ; champ `newEntities` de la vue, ligne « Nouvel appareil Home Assistant à cocher » au journal. Rien ne devient utilisable sans être coché.
+### 2026-11-08 : bouton du satellite pendant une conversation
+
+**Ajouté**
+
+- Message satellite `{"type":"session","action":"end"}` : le bouton pressé pendant une conversation de ce satellite la ferme (raison « Fin de conversation au bouton du satellite. »), sans attendre le silence. Ignoré pour la conversation d’un autre satellite ou du miroir. `welcome` annonce `features: ["session_end"]`, pour que le firmware ne change le rôle du bouton qu’avec un serveur qui le comprend.
 
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 
