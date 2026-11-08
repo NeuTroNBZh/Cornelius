@@ -9,6 +9,8 @@ Home Assistant est un logiciel de domotique installé à part. Cornelius s’y c
 - **Lumières et prises** (`light.*` et `switch.*`) : allumer, éteindre, lire l’état, et régler la luminosité des lumières qui le permettent (de 1 à 100 %).
 - **Capteurs**, en lecture seule : capteurs et détecteurs, minuteries, dates et heures, nombres, interrupteurs virtuels, listes de choix, compteurs, thermostats, volets et serrures. Un capteur n’est jamais commandé : Cornelius peut dire si une serrure est fermée, pas l’ouvrir.
 
+Un appareil ajouté ensuite dans Home Assistant apparaît tout seul dans la liste, marqué **Nouveau**, avec un compteur au-dessus de la liste, jusqu’au prochain enregistrement de la sélection. Il n’est jamais utilisable avant d’être coché. Le journal note aussi « Nouvel appareil Home Assistant à cocher ».
+
 Dans Home Assistant, un « switch » peut piloter autre chose qu’une prise. Ne cochez que les appareils que Cornelius doit vraiment commander.
 
 La configuration est commune au foyer. La carte **Home Assistant** se trouve dans la rubrique **Modules**, groupe « Maison ». Elle s’affiche quand **Sources de** vaut « Tout le monde » ou « Le foyer ».
