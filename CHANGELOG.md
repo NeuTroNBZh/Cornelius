@@ -16,6 +16,15 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 **Ajouté**
 
 - **Home Assistant → couleur des lumières** : « mets le salon en bleu », « blanc chaud au bureau ». L’outil `home_assistant__control` reçoit `rgbColor` (`[r, g, b]`, 0 à 255) et `colorTempKelvin` (1500 à 9000 K, ramené à la plage de l’ampoule), seulement pour `turn_on` et une lumière qui les accepte (`color`, `colorTemp` dans le catalogue, lus dans `supported_color_modes`). La commande n’est confirmée que si l’état relu les montre, à 40 par canal et 150 K près. Plus besoin d’une action HTTP par couleur.
+### 2026-11-08 : modes, ventilateurs, scripts et scènes
+
+**Ajouté**
+
+- **Home Assistant** : `input_boolean.*` (modes, « passe en mode nuit »), `fan.*`, `script.*` et `scene.*` se commandent avec `home_assistant__control`. Un script se lance (`turn_on`) et s’arrête (`turn_off`), une scène s’active seulement ; leur lancement est confirmé par la mise à jour de l’état. Les ventilateurs et scènes suivent l’exposition par défaut de Home Assistant pour l’import Assist. L’administration affiche « Lancer », « Arrêter » ou « Activer » selon le type.
+
+**Changé**
+
+- `input_boolean.*` passe des capteurs (lecture seule) aux appareils commandables. À la mise à jour, les `input_boolean` déjà cochés sont décochés : une sélection faite pour lire un mode ne devient pas une autorisation de le changer. Recochez ceux que Cornelius doit pouvoir changer.
 
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 
