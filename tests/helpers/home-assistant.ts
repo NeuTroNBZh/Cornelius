@@ -70,8 +70,11 @@ export async function fakeHomeAssistant() {
       const entity = states.get(String(body.entity_id));
       if (options.apply && entity && options.serviceStatus === 200) {
         const apply = () => {
+          const climate = path.endsWith('/climate/set_temperature');
+          if (climate)
+            (entity.attributes as Record<string, unknown>).temperature = body.temperature;
           // Une scène garde l’heure d’activation ; un script court se termine aussitôt.
-          if (path.startsWith('/api/services/scene/')) entity.state = new Date().toISOString();
+          else if (path.startsWith('/api/services/scene/')) entity.state = new Date().toISOString();
           else if (path.startsWith('/api/services/script/')) entity.state = 'off';
           else entity.state = path.endsWith('/turn_on') ? 'on' : 'off';
           entity.last_updated = new Date().toISOString();
