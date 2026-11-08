@@ -85,6 +85,7 @@ import {
   END_PHRASES_MAX,
   endConversationTool,
 } from './live/conversation-end.js';
+import { setSatelliteVolume } from './satellite-volume.js';
 import { registerAlarms } from './alarms-api.js';
 import { AlarmsRepository } from './alarms-store.js';
 import { MAIL_PASSWORD_SECRET } from '../shared/mail.js';
@@ -517,6 +518,9 @@ export async function createApp(
     heartbeat: options.timers !== false,
   });
   live.attachSatelliteOutput((satelliteId, pcm) => satellites.play(satelliteId, pcm));
+  live.attachSatelliteVolume((satelliteId, args) =>
+    setSatelliteVolume(satelliteStore, satellites, satelliteId, args),
+  );
   // Un minuteur demandé dans la cuisine sonne dans la cuisine, si son satellite sait sonner.
   satellites.attachAlarms({
     ringingOn: (satelliteId) => alarms.ringingOn(satelliteId),

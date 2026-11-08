@@ -930,6 +930,27 @@ test('conversation__end désactivé : l’appel est refusé et la conversation c
   await setImmediate();
   f.advance(15_000);
   assert.equal(f.controller.snapshot().state.session.phase, 'ready');
+test('satellite__volume : proposé au satellite seulement, consigne ajoutée', (t) => {
+  const tool = {
+    name: 'satellite__volume',
+    description: 'Volume.',
+    parameters: { type: 'object', additionalProperties: false, required: [], properties: {} },
+  };
+  const config = liveConfiguration([tool], undefined, undefined, { voiceOnly: true });
+  assert.match(String(config.instructions), /Volume : .*satellite__volume/u);
+  assert.match(
+    String((config.delegation as MediaSessionConfig.Responses).responses.instructions),
+    /appelle satellite__volume avec level/u,
+  );
+  const f = fixture(t);
+  f.live.attachSatelliteVolume(() => {
+    throw new Error('jamais appelé');
+  });
+  // Conversation du miroir : l’outil n’est pas proposé.
+  return f.ready().then(() => {
+    const tools = (f.configs[0]!.delegation as MediaSessionConfig.Responses).responses.tools ?? [];
+    assert.ok(!tools.some((entry) => 'name' in entry && entry.name === 'satellite__volume'));
+  });
 });
 
 test('une alarme qui sonne est annoncée une fois par conversation, sans se bousculer', async (t) => {

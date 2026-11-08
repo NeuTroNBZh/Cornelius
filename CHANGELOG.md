@@ -45,6 +45,11 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 **Ajouté**
 
 - **Satellites audio → Fin de parole sur ce satellite** : « Comme le foyer » (par défaut) ou un délai propre (5 s à 1 min dans l’administration, 3 à 300 s par l’API), pour sa conversation seulement. Champ `silenceCloseMs` des satellites (`PATCH /api/admin/satellites/:id`), table `satellite_silence`.
+### 2026-11-08 : volume du satellite à la voix
+
+**Ajouté**
+
+- Outil vocal `satellite__volume`, proposé seulement dans une conversation de satellite : « parle plus fort », « moins fort » (deux crans) ou « mets le volume à 5 » (0 à 10). Le volume est enregistré comme depuis l’administration et envoyé aussitôt au satellite (`settings`).
 
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 

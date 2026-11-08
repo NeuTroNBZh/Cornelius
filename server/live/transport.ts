@@ -16,6 +16,7 @@ import {
   endConversationTool,
   isClosingPhrase,
 } from './conversation-end.js';
+import { SATELLITE_VOLUME_TOOL, satelliteVolumeTool } from '../satellite-volume.js';
 import { illustrationPrompt } from '../image-illustration.js';
 import { validators } from '../../shared/validation.js';
 import type { PersonalityPreferences } from '../../shared/personality.js';
@@ -262,6 +263,11 @@ export class LiveTransport implements SessionTransport {
   private vision: VisionToolBridge | null = null;
   private memory: PersonalMemory | null = null;
   private satelliteOutput: ((satelliteId: string, pcm: Buffer) => void) | null = null;
+  /** Volume du satellite de la conversation, réglé à la voix (outil satellite__volume). */
+  private satelliteVolume: ((satelliteId: string, args: unknown) => ToolResult) | null = null;
+  attachSatelliteVolume(run: (satelliteId: string, args: unknown) => ToolResult) {
+    this.satelliteVolume = run;
+  }
   /** Son de Cornelius vers le satellite de la conversation, au rythme où Live le produit. */
   attachSatelliteOutput(output: (satelliteId: string, pcm: Buffer) => void) {
     this.satelliteOutput = output;
@@ -521,11 +527,12 @@ export class LiveTransport implements SessionTransport {
   /** Configuration Live du profil, avec les réglages du foyer (recherche web, délégation). */
   private configuration(profileId: string | null, voiceOnly = false) {
     return liveConfiguration(
-      this.toolDescriptors(profileId).filter(
-        (tool) =>
-          !voiceOnly ||
-          (!SATELLITE_EXCLUDED_TOOLS.test(tool.name) &&
-            (profileId !== null || !ANONYMOUS_EXCLUDED_TOOLS.test(tool.name))),
+      this.toolDescriptors(profileId).filter((tool) =>
+        // Le volume n’existe que sur un satellite ; le miroir garde ses propres outils.
+        !voiceOnly
+          ? tool.name !== SATELLITE_VOLUME_TOOL
+          : !SATELLITE_EXCLUDED_TOOLS.test(tool.name) &&
+            (profileId !== null || !ANONYMOUS_EXCLUDED_TOOLS.test(tool.name)),
       ),
       this.integrations.personality?.(profileId),
       this.controller.snapshot().state.delegationMode,
@@ -554,6 +561,7 @@ export class LiveTransport implements SessionTransport {
       ...(this.vision?.tools() ?? []),
       ...(this.memory?.tools() ?? []),
       ...(this.controller.isEndWordEnabled() ? [endConversationTool] : []),
+      ...(this.satelliteVolume ? [satelliteVolumeTool] : []),
     ];
   }
   /** Contexte silencieux : la description locale informe la réponse sans être lue à voix haute. */
@@ -1320,6 +1328,18 @@ export class LiveTransport implements SessionTransport {
             source: 'outil',
           });
         this.sendItem(active, item.call_id, endConversationResult(accepted));
+        this.finishTool(active, delegation);
+        return;
+      }
+      if (name === SATELLITE_VOLUME_TOOL && this.satelliteVolume) {
+        this.beginTool(active, delegation);
+        this.sendItem(
+          active,
+          item.call_id,
+          active.satelliteId
+            ? this.satelliteVolume(active.satelliteId, args)
+            : failureToolResult('Le volume se règle seulement sur un satellite.'),
+        );
         this.finishTool(active, delegation);
         return;
       }
