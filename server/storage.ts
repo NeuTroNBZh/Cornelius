@@ -431,6 +431,18 @@ export const migrations: readonly string[] = [
     delegation_model TEXT NOT NULL DEFAULT ''
   ) STRICT;
   INSERT OR IGNORE INTO live_preferences (id) VALUES (1);`,
+  // input_boolean passe de la lecture à la commande : une sélection faite pour lire un mode ne
+  // devient pas une autorisation de le changer. Ces entités sont décochées, à recocher.
+  `UPDATE home_assistant SET
+    selected = (
+      SELECT json_group_array(value) FROM json_each(home_assistant.selected)
+      WHERE substr(value, 1, 14) <> 'input_boolean.'
+    ),
+    revision = revision + 1
+  WHERE EXISTS (
+    SELECT 1 FROM json_each(home_assistant.selected)
+    WHERE substr(value, 1, 14) = 'input_boolean.'
+  );`,
 ];
 
 /** The server owns this connection. Backups include WAL changes via SQLite itself. */
