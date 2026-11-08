@@ -6,6 +6,12 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 
 ## Non publié
 
+### 2026-11-08 : temps de conversation
+
+**Ajouté**
+
+- **Mise en route → Temps de conversation** : minutes et nombre de conversations d’aujourd’hui, du mois et du mois précédent, dans le fuseau du foyer (70 jours gardés). Le coût n’est estimé qu’avec un prix par minute saisi (aucun par défaut, en $ ou en €). Table `voice_usage`, routes `GET /api/admin/voice-usage` et `PATCH /api/admin/voice-usage/price`.
+
 ### 2026-11-06 : démarrage depuis Home Assistant, serveur Live compatible
 
 **Ajouté**
