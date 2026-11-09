@@ -18,6 +18,12 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 
 - **Home Assistant** : un appareil apparu dans Home Assistant depuis le dernier enregistrement de la sélection est marqué « Nouveau » dans la liste, avec un compteur ; champ `newEntities` de la vue, ligne « Nouvel appareil Home Assistant à cocher » au journal. Rien ne devient utilisable sans être coché.
 
+### 2026-11-08 : consigne des thermostats
+
+**Ajouté**
+
+- **Home Assistant → Régler les thermostats** (désactivé par défaut) : nouvel outil `home_assistant__climate`, pour la consigne seulement (« mets le bureau à 20 degrés »). La valeur est ramenée à la plage et au pas du thermostat, envoyée par `climate/set_temperature` puis confirmée par relecture ; un thermostat arrêté est refusé, le mode n’est jamais changé. Réglage `climateControl` de `PATCH /api/admin/home-assistant/access`, table `home_assistant_climate`. Les thermostats restent lisibles par `home_assistant__read`.
+
 ## 0.3.0 · 2026-11-09
 
 Les satellites gagnent le bouton qui ferme la conversation, le volume à la voix et une fin de parole propre à chacun. Home Assistant règle la couleur et le blanc des lumières. S’y ajoutent les alarmes, minuteurs et rappels, le déclencheur Home Assistant et le serveur Live compatible.
