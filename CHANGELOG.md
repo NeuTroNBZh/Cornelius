@@ -40,6 +40,20 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 
 - **Mise en route → Temps de conversation** : minutes et nombre de conversations d’aujourd’hui, du mois et du mois précédent, dans le fuseau du foyer (70 jours gardés), par fournisseur vocal. Le coût n’est estimé que pour le temps passé avec Mistral, facturé à la minute, et avec un prix par minute saisi (aucun par défaut, en $ ou en €) ; OpenAI, facturé aux jetons, n’a pas d’estimation. Seule une conversation devenue prête est comptée, y compris quand la clôture n’est pas acquittée. Table `voice_usage_days`, routes `GET /api/admin/voice-usage` et `PATCH /api/admin/voice-usage/price`.
 
+### 2026-11-09 : suites de relecture (couleur, bouton, fin de parole, volume)
+
+**Corrigé**
+
+- **Home Assistant → couleur** : une teinte sombre (`[128, 0, 128]`), relue par Home Assistant à pleine intensité (`[255, 0, 255]`), est maintenant confirmée : les deux couleurs sont comparées à pleine intensité.
+- **Satellites → volume à la voix** : la fiche du satellite dans l’administration suit un réglage fait à la voix. Au volume 0, Cornelius rappelle que les sonneries du satellite (réveils, minuteurs, rappels) sont muettes aussi.
+
+**Documentation**
+
+- Confidentialité : le bouton du satellite coupe le micro en veille et ferme la conversation pendant une conversation.
+- Satellites et administration : le délai de fin de parole propre au satellite est pris à l’ouverture, un changement vaut pour la conversation suivante ; volume 0 et sonneries.
+- Home Assistant et architecture : couleur et blanc de `home_assistant__control`, comparaison à pleine intensité.
+- Test de la route `POST /api/admin/home-assistant/control` avec `rgbColor`.
+
 ## 0.3.0 · 2026-11-09
 
 Les satellites gagnent le bouton qui ferme la conversation, le volume à la voix et une fin de parole propre à chacun. Home Assistant règle la couleur et le blanc des lumières. S’y ajoutent les alarmes, minuteurs et rappels, le déclencheur Home Assistant et le serveur Live compatible.
