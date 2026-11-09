@@ -12,6 +12,12 @@ Le fonctionnement actuel est décrit dans la [documentation](docs/README.md). Ce
 
 - **Fin de parole → Fermer quand on dit merci** (désactivée par défaut) : quand la personne clôt l’échange sans nouvelle demande (« merci », « c’est tout », « au revoir », « bonne nuit »), Cornelius répond d’une formule courte puis la conversation se ferme 2 s après la fin de sa réponse, au plus tard 10 s après. La parole entendue dans la pièce ne la retient pas : utile sur un satellite quand on parle ensuite à quelqu’un d’autre. La fin est reconnue par le serveur dans la transcription (une phrase faite seulement d’une formule de fin), ou par le modèle avec l’outil vocal `conversation__end`. Route `PATCH /api/admin/end-word` et champ `endWord` de l’état. **Autres formules de fin** : celles du foyer, une par ligne (20 au plus, 60 caractères), reconnues quand elles forment toute la phrase et données au modèle ; route `PATCH /api/admin/end-word/phrases`, champ `endPhrases`, table `end_word_phrases`. Le réglage vaut à partir de la conversation suivante.
 
+### 2026-11-08 : nouveaux appareils Home Assistant signalés
+
+**Ajouté**
+
+- **Home Assistant** : un appareil apparu dans Home Assistant depuis le dernier enregistrement de la sélection est marqué « Nouveau » dans la liste, avec un compteur ; champ `newEntities` de la vue, ligne « Nouvel appareil Home Assistant à cocher » au journal. Rien ne devient utilisable sans être coché.
+
 ## 0.3.0 · 2026-11-09
 
 Les satellites gagnent le bouton qui ferme la conversation, le volume à la voix et une fin de parole propre à chacun. Home Assistant règle la couleur et le blanc des lumières. S’y ajoutent les alarmes, minuteurs et rappels, le déclencheur Home Assistant et le serveur Live compatible.
