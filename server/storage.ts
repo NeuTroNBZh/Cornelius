@@ -434,20 +434,18 @@ export const migrations: readonly string[] = [
     delegation_model TEXT NOT NULL DEFAULT ''
   ) STRICT;
   INSERT OR IGNORE INTO live_preferences (id) VALUES (1);`,
-  // Fin de parole propre à un satellite : sans ligne, celle du foyer.
-  `CREATE TABLE IF NOT EXISTS satellite_silence (
-    satellite_id TEXT PRIMARY KEY REFERENCES satellites(id) ON DELETE CASCADE,
-    delay_ms INTEGER NOT NULL CHECK (delay_ms BETWEEN 3000 AND 300000)
-  ) STRICT;`,
-  // Temps de conversation par jour et prix par minute saisi (aucun par défaut).
-  voiceUsageMigration,
-  // La première PR utilisait l’index désormais réservé aux alarmes.
-  `${alarmsMigration}
-${satelliteGesturesMigration}`,
-  // L'ancienne PR Google Photos utilisait le même numéro que customProviderMigration.
-  // Les deux migrations sont rejouables : assurer les deux tables préserve aussi ces bases.
-  `${customProviderMigration}
-${googlePhotosMigration}`,
+  // Mot de fin (« merci », « c’est tout ») : désactivé, le comportement existant reste.
+  `CREATE TABLE IF NOT EXISTS end_word_preferences (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    enabled INTEGER NOT NULL DEFAULT 0 CHECK (enabled IN (0, 1))
+  ) STRICT;
+  INSERT OR IGNORE INTO end_word_preferences (id) VALUES (1);`,
+  // Formules de fin propres au foyer (« c’est bon Jarvis ») : liste JSON, vide par défaut.
+  `CREATE TABLE IF NOT EXISTS end_word_phrases (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    phrases TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(phrases))
+  ) STRICT;
+  INSERT OR IGNORE INTO end_word_phrases (id) VALUES (1);`,
   // input_boolean passe de la lecture à la commande : une sélection faite pour lire un mode ne
   // devient pas une autorisation de le changer. Ces entités sont décochées, à recocher.
   `UPDATE home_assistant SET
@@ -466,18 +464,23 @@ ${googlePhotosMigration}`,
     enabled INTEGER NOT NULL DEFAULT 0 CHECK (enabled IN (0, 1))
   ) STRICT;
   INSERT OR IGNORE INTO home_assistant_climate (id) VALUES (1);`,
-  // Mot de fin (« merci », « c’est tout ») : désactivé, le comportement existant reste.
-  `CREATE TABLE IF NOT EXISTS end_word_preferences (
-    id INTEGER PRIMARY KEY CHECK (id = 1),
-    enabled INTEGER NOT NULL DEFAULT 0 CHECK (enabled IN (0, 1))
-  ) STRICT;
-  INSERT OR IGNORE INTO end_word_preferences (id) VALUES (1);`,
-  // Formules de fin propres au foyer (« c’est bon Jarvis ») : liste JSON, vide par défaut.
-  `CREATE TABLE IF NOT EXISTS end_word_phrases (
-    id INTEGER PRIMARY KEY CHECK (id = 1),
-    phrases TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(phrases))
-  ) STRICT;
-  INSERT OR IGNORE INTO end_word_phrases (id) VALUES (1);`,
+  // Fin de parole propre à un satellite : sans ligne, celle du foyer.
+  `CREATE TABLE IF NOT EXISTS satellite_silence (
+    satellite_id TEXT PRIMARY KEY REFERENCES satellites(id) ON DELETE CASCADE,
+    delay_ms INTEGER NOT NULL CHECK (delay_ms BETWEEN 3000 AND 300000)
+  ) STRICT;`,
+  // Temps de conversation par jour et prix par minute saisi (aucun par défaut).
+  voiceUsageMigration,
+  // Temps de conversation par jour et prix par minute saisi (aucun par défaut).
+  voiceUsageMigration,
+  // Base de Louis : migrations idempotentes absentes de l’intégration précédente, rejouées en fin de liste.
+  // La première PR utilisait l’index désormais réservé aux alarmes.
+  `${alarmsMigration}
+${satelliteGesturesMigration}`,
+  // L'ancienne PR Google Photos utilisait le même numéro que customProviderMigration.
+  // Les deux migrations sont rejouables : assurer les deux tables préserve aussi ces bases.
+  `${customProviderMigration}
+${googlePhotosMigration}`,
 ];
 
 /** The server owns this connection. Backups include WAL changes via SQLite itself. */
